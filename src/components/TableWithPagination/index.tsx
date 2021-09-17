@@ -1,7 +1,7 @@
 import {ChangeEvent, Component} from "react";
 import {DataGrid, GridColumns, GridSortModel} from "@mui/x-data-grid";
 import {ApiClient, PageData, PageMetaData} from "../../services/api-client";
-import {Grid, TextField} from "@mui/material";
+import {Grid, Snackbar, TextField} from "@mui/material";
 
 interface TableProps {
     baseUrl: string
@@ -14,7 +14,8 @@ interface TableState<T> {
     sortModel: GridSortModel;
     data: T[];
     pageMeta: PageMetaData;
-    search: string
+    search: string;
+    error?: string;
 }
 
 export default class TableWithPagination<T> extends Component<TableProps, TableState<T>> {
@@ -23,17 +24,21 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
 
     constructor(props: TableProps) {
         super(props);
+
         this.setPage = this.setPage.bind(this);
         this.setPageSize = this.setPageSize.bind(this);
-        this.setSearch = this.setSearch.bind(this);
         this.setSortModel = this.setSortModel.bind(this);
+        this.setSearch = this.setSearch.bind(this);
+        this.onSnackbarClose = this.onSnackbarClose.bind(this);
+
         this.apiClient = new ApiClient();
         this.state = {
             loading: true,
             sortModel: [],
             data: [],
             pageMeta: {take: 5, pageCount: 0, page: 0, itemCount: 0},
-            search: ''
+            search: '',
+            error: undefined
         };
     }
 
@@ -78,12 +83,11 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
                 });
             })
             .catch((err: Error) => {
+                console.error(err);
                 this.setState({
+                    error: err.message,
                     loading: false
                 });
-                // todo: show toast message
-                console.error(err);
-                throw err;
             });
     }
 
@@ -111,18 +115,25 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
         this.setPage(this.state.pageMeta.page);
     }
 
+    onSnackbarClose() {
+        this.setState({
+            error: undefined
+        });
+    }
+
     render() {
         return (
             <Grid container spacing={2} style={{padding: '5px'}}>
-                {this.props.showSearchBar &&
-                <Grid item xs={12}>
-                    <TextField
-                        fullWidth={true}
-                        placeholder={"Search user by first name, last name or email"}
-                        value={this.state.search}
-                        onChange={this.setSearch}
-                    />
-                </Grid>
+                {
+                    this.props.showSearchBar &&
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth={true}
+                            placeholder={"Search user by first name, last name or email"}
+                            value={this.state.search}
+                            onChange={this.setSearch}
+                        />
+                    </Grid>
                 }
                 <Grid item xs={12}>
                     <DataGrid
@@ -146,6 +157,16 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
                         onSortModelChange={this.setSortModel}
                     />
                 </Grid>
+                {
+                    this.state.error &&
+                    <Snackbar
+                        open={true}
+                        anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+                        autoHideDuration={3000}
+                        onClose={this.onSnackbarClose}
+                        message={this.state.error}
+                    />
+                }
             </Grid>
         );
     }
