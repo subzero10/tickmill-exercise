@@ -1,6 +1,5 @@
 import 'whatwg-fetch'
 
-
 export interface PageQuery {
     page?: number
     take?: number
@@ -60,7 +59,7 @@ export class ApiClient {
     }
 
     private async fetch<T>(url: string, request: RequestInit): Promise<T> {
-        const response = await window.fetch(url, {
+        const response = await window.fetch(process.env.REACT_APP_API_URL + url, {
             headers: this.headers,
             ...request,
         })

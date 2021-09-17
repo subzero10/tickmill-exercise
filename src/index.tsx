@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import Index from './components/App';
 import CssBaseline from '@mui/material/CssBaseline';
 import reportWebVitals from './reportWebVitals';
 
@@ -13,7 +13,7 @@ import './index.css';
 ReactDOM.render(
     <React.StrictMode>
         <CssBaseline/>
-        <App/>
+        <Index/>
     </React.StrictMode>,
     document.getElementById('root')
 );

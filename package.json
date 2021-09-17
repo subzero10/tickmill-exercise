@@ -47,15 +47,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": {
-    "/api": {
-      "comment": "this is for development. static.json is used for production.",
-      "comment-more-info": " see here for more:https://github.com/mars/create-react-app-buildpack#proxy-for-deployment",
-      "target": "http://localhost:3001",
-      "pathRewrite": {
-        "^/api": "/"
-      }
-    }
   }
 }

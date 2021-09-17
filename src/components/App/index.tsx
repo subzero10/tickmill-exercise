@@ -1,10 +1,10 @@
 import {Component} from 'react';
 import './App.css';
 
-import Users from "./Users";
+import Users from "../../domain/Users";
 import {Grid} from "@mui/material";
 
-export default class App extends Component<{}, {}> {
+export default class Index extends Component<{}, {}> {
 
     render() {
         return (
