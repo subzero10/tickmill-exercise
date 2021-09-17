@@ -43,7 +43,7 @@ export default class Users extends Component<{}, UsersState> {
     }
 
     baseUrl(): string {
-        return "http://localhost:3001/users/";
+        return "api/users/";
     }
 
     /**
