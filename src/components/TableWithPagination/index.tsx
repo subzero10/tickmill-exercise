@@ -23,6 +23,10 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
 
     constructor(props: TableProps) {
         super(props);
+        this.setPage = this.setPage.bind(this);
+        this.setPageSize = this.setPageSize.bind(this);
+        this.setSearch = this.setSearch.bind(this);
+        this.setSortModel = this.setSortModel.bind(this);
         this.apiClient = new ApiClient();
         this.state = {
             loading: true,
@@ -87,6 +91,10 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
         this.fetchData(newPage, this.state.pageMeta.take);
     }
 
+    setPageSize(newPageSize: number) {
+        this.fetchData(0, newPageSize);
+    }
+
     setSortModel(newModel: GridSortModel) {
         this.setState({
             sortModel: newModel
@@ -105,13 +113,14 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
 
     render() {
         return (
-            <Grid container spacing={2}>
+            <Grid container spacing={2} style={{padding: '5px'}}>
                 {this.props.showSearchBar &&
                 <Grid item xs={12}>
                     <TextField
+                        fullWidth={true}
                         placeholder={"Search user by first name, last name or email"}
                         value={this.state.search}
-                        onChange={(event) => this.setSearch(event)}
+                        onChange={this.setSearch}
                     />
                 </Grid>
                 }
@@ -130,10 +139,11 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
                         paginationMode={'server'}
                         rowCount={this.state.pageMeta.itemCount}
                         rowsPerPageOptions={[5, 10, 25, 50]}
-                        onPageChange={(newPage) => this.setPage(newPage)}
+                        onPageChange={this.setPage}
+                        onPageSizeChange={this.setPageSize}
                         // sorting
                         sortingMode={'server'}
-                        onSortModelChange={(newModel) => this.setSortModel(newModel)}
+                        onSortModelChange={this.setSortModel}
                     />
                 </Grid>
             </Grid>
