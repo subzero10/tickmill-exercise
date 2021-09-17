@@ -2,6 +2,7 @@ import {ChangeEvent, Component} from "react";
 import {DataGrid, GridColumns, GridSortModel} from "@mui/x-data-grid";
 import {ApiClient, PageData, PageMetaData} from "../../services/api-client";
 import {Grid, Snackbar, TextField} from "@mui/material";
+import constants from '../../common/constants'
 
 interface TableProps {
     baseUrl: string
@@ -36,7 +37,7 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
             loading: true,
             sortModel: [],
             data: [],
-            pageMeta: {take: 5, pageCount: 0, page: 0, itemCount: 0},
+            pageMeta: {take: constants.PAGINATION_DEFAULT_PAGE_SIZE, pageCount: 0, page: 0, itemCount: 0},
             search: '',
             error: undefined
         };
@@ -64,7 +65,7 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
         return url;
     }
 
-    fetchData(page: number = 0, perPage: number = 10): void {
+    fetchData(page: number = 0, perPage: number = constants.PAGINATION_DEFAULT_PAGE_SIZE): void {
         this.setState({
             loading: true
         });
@@ -149,7 +150,7 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
                         page={this.state.pageMeta.page}
                         paginationMode={'server'}
                         rowCount={this.state.pageMeta.itemCount}
-                        rowsPerPageOptions={[5, 10, 25, 50]}
+                        rowsPerPageOptions={constants.PAGINATION_DEFAULT_ROWS_PER_PAGE}
                         onPageChange={this.setPage}
                         onPageSizeChange={this.setPageSize}
                         // sorting

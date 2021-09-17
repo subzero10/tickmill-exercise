@@ -2,6 +2,7 @@ import {Component} from "react";
 import {GridColumns, GridValueFormatterParams} from '@mui/x-data-grid';
 import TableWithPagination from "../../components/TableWithPagination";
 import {User} from "./user.dto";
+import constants from "../../common/constants";
 
 function dateFormatter(params: GridValueFormatterParams): string {
     return new Date(params.getValue(params.id, 'createdAt') as string).toLocaleString();
@@ -45,7 +46,7 @@ export default class Users extends Component<{}, {}> {
             <div style={{display: 'flex'}}>
                 <div style={{flexGrow: 1}}>
                     <TableWithPagination<User>
-                        baseUrl={'users/'}
+                        baseUrl={constants.API_USERS_ENDPOINT}
                         columns={this.getTableColumns()}
                         showSearchBar={true}
                     />

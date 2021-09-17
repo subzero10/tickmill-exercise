@@ -1,4 +1,5 @@
 import 'whatwg-fetch'
+import constants from "../common/constants";
 
 export interface PageQuery {
     page?: number
@@ -48,6 +49,17 @@ export class ApiClient {
 
     errorHandler?: ErrorHandler
 
+    private buildUrl(url: string): string {
+        const base = constants.API_BASE_URL.endsWith('/')
+            ? constants.API_BASE_URL
+            : constants.API_BASE_URL + '/'
+
+        const urlTrimmed = url.startsWith('/')
+            ? url.substring(1, url.length)
+            : url;
+
+        return base + urlTrimmed;
+    }
 
     private get headers(): Headers | undefined {
         const headers: Record<string, string> = {
@@ -59,7 +71,7 @@ export class ApiClient {
     }
 
     private async fetch<T>(url: string, request: RequestInit): Promise<T> {
-        const response = await window.fetch(process.env.REACT_APP_API_URL + url, {
+        const response = await window.fetch(this.buildUrl(url), {
             headers: this.headers,
             ...request,
         })
