@@ -46,12 +46,10 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
     /**
      * DataGrid pagination starts from 0.
      * Server side starts from 1.
-     *
-     * @param page
-     * @param perPage
      */
-    getNextPageUrl(page: number, perPage: number): string {
-        let url = `${this.props.baseUrl}?page=${page + 1}&take=${perPage}`;
+    getNextPageUrl(): string {
+        const pageMeta = this.state.pageMeta;
+        let url = `${this.props.baseUrl}?page=${pageMeta.page + 1}&take=${pageMeta.take}`;
         if (this.state.sortModel && this.state.sortModel.length) {
             const orderBy = this.state.sortModel[0];
             if (orderBy.sort) {
@@ -65,11 +63,11 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
         return url;
     }
 
-    fetchData(page: number = 0, perPage: number = constants.PAGINATION_DEFAULT_PAGE_SIZE): void {
+    fetchData(): void {
         this.setState({
             loading: true
         });
-        this.apiClient.get(this.getNextPageUrl(page, perPage))
+        this.apiClient.get(this.getNextPageUrl())
             .then(resp => {
                 const meta = (resp as PageData<T>).meta;
                 this.setState({
@@ -93,23 +91,29 @@ export default class TableWithPagination<T> extends Component<TableProps, TableS
     }
 
     setPage(newPage: number) {
-        this.fetchData(newPage, this.state.pageMeta.take);
+        this.setState({
+            pageMeta: {...this.state.pageMeta, page: newPage}
+        }, () => this.fetchData());
     }
 
     setPageSize(newPageSize: number) {
-        this.fetchData(0, newPageSize);
+        this.setState({
+            pageMeta: {...this.state.pageMeta, take: newPageSize}
+        }, () => this.fetchData());
     }
 
     setSortModel(newModel: GridSortModel) {
         this.setState({
+            pageMeta: {...this.state.pageMeta, page: 0},
             sortModel: newModel
-        }, () => this.setPage(0));
+        }, () => this.fetchData());
     }
 
     setSearch(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         this.setState({
+            pageMeta: {...this.state.pageMeta, page: 0},
             search: event.target.value
-        }, () => this.setPage(0));
+        }, () => this.fetchData());
     }
 
     componentDidMount() {
