@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {GridCellValue, GridColumns, GridValueFormatterParams} from '@mui/x-data-grid';
+import {GridColumns, GridValueFormatterParams} from '@mui/x-data-grid';
 import TableWithPagination from "../../components/TableWithPagination";
 import {User} from "./user.dto";
 import constants from "../../common/constants";
